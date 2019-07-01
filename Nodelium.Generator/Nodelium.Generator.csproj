@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DisableMSBuildAssemblyCopyCheck>True</DisableMSBuildAssemblyCopyCheck>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>Nodelium.Generator</AssemblyName>
+    <RootNamespace>Nodelium.Generator</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
+    <PackageReference Include="Microsoft.Build" Version="16.0.461" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="16.0.461" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.2.2" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.0.461" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.2.0-beta1-final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.2.0-beta1-final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.2.0-beta1-final" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nodelium.External\Nodelium.External.csproj" />
+  </ItemGroup>
+</Project>
