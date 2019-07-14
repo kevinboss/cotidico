@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using Nodelium.External;
 using Nodelium.Generator.Extensions;
+using Nodelium.Generator.ModuleInfos;
 
 namespace Nodelium.Generator.Analyzer
 {
@@ -48,13 +49,21 @@ namespace Nodelium.Generator.Analyzer
 
                         var moduleInfos = AnalyzeModules(modulesToAnalyze, semanticModel);
 
+                        foreach (var moduleInfo in moduleInfos)
+                        {
+                            foreach (var mappingInfo in moduleInfo.MappingInfos)
+                            {
+                            }
+                        }
+
                         var filePath = document.FilePath;
                     }
                 }
             }
         }
 
-        private static IEnumerable<ModuleInfo> AnalyzeModules(List<INamedTypeSymbol> modulesToAnalyze, SemanticModel semanticModel)
+        private static IEnumerable<ModuleInfo> AnalyzeModules(List<INamedTypeSymbol> modulesToAnalyze,
+            SemanticModel semanticModel)
         {
             foreach (var moduleToAnalyze in modulesToAnalyze)
             {
@@ -66,7 +75,8 @@ namespace Nodelium.Generator.Analyzer
             }
         }
 
-        private static IEnumerable<MappingInfo> AnalyzeModule(SemanticModel semanticModel, INamedTypeSymbol moduleToAnalyze)
+        private static IEnumerable<MappingInfo> AnalyzeModule(SemanticModel semanticModel,
+            INamedTypeSymbol moduleToAnalyze)
         {
             var loadMethods = moduleToAnalyze.GetMembers(ExternalLibraryNames.Module.Load.Name);
             foreach (var loadMethod in loadMethods)
@@ -87,16 +97,40 @@ namespace Nodelium.Generator.Analyzer
                 .Select(invocationExpressionSyntax =>
                     semanticModel.GetSymbolInfo(invocationExpressionSyntax.Expression).Symbol as IMethodSymbol)
                 .Where(e => e.GetFullMetadataName() == ExternalLibraryNames.Module.Register.FullName);
-                
-            var registerMethodsTypeArguments = methodSymbols.Select(e => e.TypeArguments).ToList();
 
-            foreach (var typeArgument in registerMethodsTypeArguments)
+            var mappings = methodSymbols.Select(e => e.TypeArguments).ToList();
+
+            foreach (var mapping in mappings)
             {
-                yield return MappingInfo.Create(typeArgument[0], typeArgument[1]);
+                if (!(mapping[0] is INamedTypeSymbol from))
+                {
+                    throw new AnalyzerException(
+                        $"Implementation is invalid: {mapping[0].ToDisplayString()}");
+                }
+
+                if (!from.Constructors.Any())
+                {
+                    throw new AnalyzerException(
+                        $"Implementation has no constructor: {mapping[0].ToDisplayString()}");
+                }
+
+                var constructionInfos = from.Constructors.Select(constructor =>
+                        ConstructionInfo.Create(
+                            constructor.Parameters.Select(
+                                    parameter => parameter.Type.GetFullMetadataName())
+                                .ToList()))
+                    .ToList();
+                var fromInfo = FromInfo.Create(from.GetFullMetadataName(), constructionInfos);
+
+                var to = mapping[1];
+                var toInfo = ToInfo.Create(to.GetFullMetadataName());
+
+                yield return MappingInfo.Create(fromInfo, toInfo);
             }
         }
 
-        private static List<INamedTypeSymbol> GetModulesToAnalyze(CompilationUnitSyntax root, SemanticModel semanticModel)
+        private static List<INamedTypeSymbol> GetModulesToAnalyze(CompilationUnitSyntax root,
+            SemanticModel semanticModel)
         {
             var modulesToAnalyze = root
                 .DescendantNodes()

@@ -5,7 +5,7 @@ namespace Nodelium.External
         public abstract void Load();
 
         public void Register<TRegister, TAs>()
-            where TRegister : TAs, new()
+            where TRegister : class, TAs
         {
         }
     }

@@ -4,7 +4,7 @@ namespace Testsolution
 {
     public class SampleModule : Module
     {
-        protected override void Load()
+        public override void Load()
         {
             Register<SampleB, ISampleB>();
             Register<SampleA, ISampleA>();

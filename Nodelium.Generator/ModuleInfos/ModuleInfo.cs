@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Nodelium.Generator.Analyzer
+namespace Nodelium.Generator.ModuleInfos
 {
     public class ModuleInfo
     {
