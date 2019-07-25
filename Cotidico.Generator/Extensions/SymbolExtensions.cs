@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace Nodelium.Generator.Extensions
+namespace Cotidico.Generator.Extensions
 {
     public static class SymbolExtensions
     {

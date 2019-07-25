@@ -1,10 +1,10 @@
-namespace Nodelium.Generator
+namespace Cotidico.Generator
 {
     public static class ExternalLibraryNames
     {
         public static class Module
         {
-            public static string FullName => typeof(Nodelium.External.Module).FullName;
+            public static string FullName => typeof(External.Module).FullName;
 
             public static class Load
             {

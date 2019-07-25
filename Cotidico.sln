@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Container.Test", "Container.Test\Container.Test.csproj", "{E38972BF-040F-4992-A56E-B8BC69F54DCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodelium.Generator", "Nodelium.Generator\Nodelium.Generator.csproj", "{A162E988-D4C7-4981-AE25-2A1CCDE241B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cotidico.Generator", "Cotidico.Generator\Cotidico.Generator.csproj", "{A162E988-D4C7-4981-AE25-2A1CCDE241B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodelium.External", "Nodelium.External\Nodelium.External.csproj", "{C97438EA-958C-426A-9478-150A8FF2B604}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cotidico.External", "Cotidico.External\Cotidico.External.csproj", "{C97438EA-958C-426A-9478-150A8FF2B604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

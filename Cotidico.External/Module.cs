@@ -1,4 +1,4 @@
-namespace Nodelium.External
+namespace Cotidico.External
 {
     public abstract class Module
     {

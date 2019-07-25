@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Nodelium.External, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Nodelium.External\bin\Debug\netstandard2.0\Nodelium.External.dll</HintPath>
+    <Reference Include="Cotidico.External, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Cotidico.Generator\bin\Debug\netcoreapp2.2\Cotidico.External.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace Nodelium.Generator.Analyzer
+namespace Cotidico.Generator.Analyzer
 {
     public class AnalyzerException : Exception
     {

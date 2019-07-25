@@ -1,5 +1,5 @@
 using System.IO;
-using Nodelium.Generator;
+using Cotidico.Generator;
 using NUnit.Framework;
 
 namespace ContainerTests

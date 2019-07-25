@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Nodelium.Generator.ModuleInfos
+namespace Cotidico.Generator.ModuleInfos
 {
     public class FromInfo
     {

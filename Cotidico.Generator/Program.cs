@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace Nodelium.Generator
+namespace Cotidico.Generator
 {
     public class Program
     {

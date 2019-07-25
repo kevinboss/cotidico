@@ -4,8 +4,6 @@
     <DisableMSBuildAssemblyCopyCheck>True</DisableMSBuildAssemblyCopyCheck>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AssemblyName>Nodelium.Generator</AssemblyName>
-    <RootNamespace>Nodelium.Generator</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
@@ -19,6 +17,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.2.0-beta1-final" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nodelium.External\Nodelium.External.csproj" />
+    <ProjectReference Include="..\Cotidico.External\Cotidico.External.csproj" />
   </ItemGroup>
 </Project>

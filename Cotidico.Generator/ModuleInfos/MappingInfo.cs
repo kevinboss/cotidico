@@ -1,4 +1,4 @@
-namespace Nodelium.Generator.ModuleInfos
+namespace Cotidico.Generator.ModuleInfos
 {
     public class MappingInfo
     {
@@ -10,7 +10,7 @@ namespace Nodelium.Generator.ModuleInfos
         {
             return new MappingInfo
             {
-                From = @from,
+                From = from,
                 To = to
             };
         }

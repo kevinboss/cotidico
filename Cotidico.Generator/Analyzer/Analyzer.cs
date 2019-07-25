@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cotidico.External;
+using Cotidico.Generator.Extensions;
+using Cotidico.Generator.ModuleInfos;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using Nodelium.External;
-using Nodelium.Generator.Extensions;
-using Nodelium.Generator.ModuleInfos;
 
-namespace Nodelium.Generator.Analyzer
+namespace Cotidico.Generator.Analyzer
 {
     public class Analyzer
     {
@@ -117,7 +117,7 @@ namespace Nodelium.Generator.Analyzer
                 var constructionInfos = from.Constructors.Select(constructor =>
                         ConstructionInfo.Create(
                             constructor.Parameters.Select(
-                                    parameter => parameter.Type.GetFullMetadataName())
+                                    parameter => ParameterInfo.Create(parameter.Type.GetFullMetadataName()))
                                 .ToList()))
                     .ToList();
                 var fromInfo = FromInfo.Create(from.GetFullMetadataName(), constructionInfos);

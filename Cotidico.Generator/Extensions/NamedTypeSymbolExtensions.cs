@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Nodelium.Generator.Extensions
+namespace Cotidico.Generator.Extensions
 {
     public static class NamedTypeSymbolExtensions
     {
