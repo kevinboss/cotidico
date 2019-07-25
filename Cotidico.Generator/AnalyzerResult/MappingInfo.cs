@@ -1,4 +1,4 @@
-namespace Cotidico.Generator.ModuleInfos
+namespace Cotidico.Generator.AnalyzerResult
 {
     public class MappingInfo
     {

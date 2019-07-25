@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cotidico.External;
+using Cotidico.Generator.AnalyzerResult;
 using Cotidico.Generator.Extensions;
-using Cotidico.Generator.ModuleInfos;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
+using DocumentInfo = Cotidico.Generator.AnalyzerResult.DocumentInfo;
+using ProjectInfo = Cotidico.Generator.AnalyzerResult.ProjectInfo;
 
 namespace Cotidico.Generator.Analyzer
 {
     public class Analyzer
     {
-        public async Task AnalyzeSolution(string solutionPath)
+        public async Task<AnalyzerResultInfo> AnalyzeSolution(string solutionPath)
         {
             var msBuildInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
 
@@ -34,32 +36,41 @@ namespace Cotidico.Generator.Analyzer
                 };
                 var solution = await workspace.OpenSolutionAsync(solutionPath);
 
+                var projectInfos = new List<ProjectInfo>();
                 foreach (var project in solution.Projects)
                 {
-                    var compilation = await project.GetCompilationAsync();
-                    foreach (var document in project.Documents)
-                    {
-                        var tree = await document.GetSyntaxTreeAsync();
-                        var semanticModel = compilation.GetSemanticModel(tree);
-                        var root = tree.GetCompilationUnitRoot();
-
-                        var modulesToAnalyze = GetModulesToAnalyze(root, semanticModel);
-
-                        if (!modulesToAnalyze.Any()) continue;
-
-                        var moduleInfos = AnalyzeModules(modulesToAnalyze, semanticModel);
-
-                        foreach (var moduleInfo in moduleInfos)
-                        {
-                            foreach (var mappingInfo in moduleInfo.MappingInfos)
-                            {
-                            }
-                        }
-
-                        var filePath = document.FilePath;
-                    }
+                    var projectPath = project.FilePath;
+                    var documentInfos = await AnalyzeProject(project);
+                    
+                    projectInfos.Add(ProjectInfo.Create(projectPath, documentInfos));
                 }
+
+                return AnalyzerResultInfo.Create(projectInfos);
             }
+        }
+
+        private static async Task<IReadOnlyList<DocumentInfo>> AnalyzeProject(Project project)
+        {
+            var documentInfos = new List<DocumentInfo>();
+
+            var compilation = await project.GetCompilationAsync();
+            foreach (var document in project.Documents)
+            {
+                var tree = await document.GetSyntaxTreeAsync();
+                var semanticModel = compilation.GetSemanticModel(tree);
+                var root = tree.GetCompilationUnitRoot();
+
+                var modulesToAnalyze = GetModulesToAnalyze(root, semanticModel);
+
+                if (!modulesToAnalyze.Any()) continue;
+
+                var moduleInfos = AnalyzeModules(modulesToAnalyze, semanticModel);
+                var filePath = document.FilePath;
+
+                documentInfos.Add(DocumentInfo.Create(filePath, moduleInfos));
+            }
+
+            return documentInfos;
         }
 
         private static IEnumerable<ModuleInfo> AnalyzeModules(List<INamedTypeSymbol> modulesToAnalyze,

@@ -35,7 +35,7 @@ namespace Cotidico.Generator
 
         private async Task Run(string solutionPath)
         {
-            await _analyzer.AnalyzeSolution(solutionPath);
+            var analyzerResult = await _analyzer.AnalyzeSolution(solutionPath);
         }
     }
 }

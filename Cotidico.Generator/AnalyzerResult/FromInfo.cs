@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cotidico.Generator.ModuleInfos
+namespace Cotidico.Generator.AnalyzerResult
 {
     public class FromInfo
     {
