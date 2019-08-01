@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cotidico.Generator.AnalyzerResult
+namespace Cotidico.Generator.Analyzer.AnalyzerResult
 {
     public class ConstructionInfo
     {

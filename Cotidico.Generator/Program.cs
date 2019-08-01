@@ -6,10 +6,12 @@ namespace Cotidico.Generator
     public class Program
     {
         private readonly Analyzer.Analyzer _analyzer;
+        private readonly ConstructionPlanner.ConstructionPlanner _constructionPlanner;
 
         private Program()
         {
             _analyzer = new Analyzer.Analyzer();
+            _constructionPlanner = new ConstructionPlanner.ConstructionPlanner();
         }
 
         public static int Main(string[] args)
@@ -36,6 +38,7 @@ namespace Cotidico.Generator
         private async Task Run(string solutionPath)
         {
             var analyzerResult = await _analyzer.AnalyzeSolution(solutionPath);
+            var constructionPlan = _constructionPlanner.CreatePlanFromAnalysis(analyzerResult);
         }
     }
 }

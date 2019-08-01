@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cotidico.Generator.AnalyzerResult
+namespace Cotidico.Generator.Analyzer.AnalyzerResult
 {
     public class ModuleInfo
     {
@@ -8,18 +8,16 @@ namespace Cotidico.Generator.AnalyzerResult
         {
         }
 
-        public static ModuleInfo Create(string className, string namespaceName, IEnumerable<MappingInfo> mappingInfos)
+        public static ModuleInfo Create(string className, IEnumerable<MappingInfo> mappingInfos)
         {
             return new ModuleInfo
             {
                 ClassName = className,
-                NamespaceName = namespaceName,
                 MappingInfos = mappingInfos
             };
         }
 
         public string ClassName { get; set; }
-        public string NamespaceName { get; set; }
         public IEnumerable<MappingInfo> MappingInfos { get; set; }
     }
 }

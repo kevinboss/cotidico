@@ -1,4 +1,4 @@
-namespace Cotidico.Generator.AnalyzerResult
+namespace Cotidico.Generator.Analyzer.AnalyzerResult
 {
     public class ToInfo
     {

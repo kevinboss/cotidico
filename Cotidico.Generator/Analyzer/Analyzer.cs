@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cotidico.External;
-using Cotidico.Generator.AnalyzerResult;
+using Cotidico.Generator.Analyzer.AnalyzerResult;
 using Cotidico.Generator.Extensions;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using DocumentInfo = Cotidico.Generator.AnalyzerResult.DocumentInfo;
-using ProjectInfo = Cotidico.Generator.AnalyzerResult.ProjectInfo;
+using DocumentInfo = Cotidico.Generator.Analyzer.AnalyzerResult.DocumentInfo;
+using ProjectInfo = Cotidico.Generator.Analyzer.AnalyzerResult.ProjectInfo;
 
 namespace Cotidico.Generator.Analyzer
 {
@@ -66,8 +66,9 @@ namespace Cotidico.Generator.Analyzer
 
                 var moduleInfos = AnalyzeModules(modulesToAnalyze, semanticModel);
                 var filePath = document.FilePath;
+                var nameSpaceName = modulesToAnalyze.First().ContainingNamespace.Name;
 
-                documentInfos.Add(DocumentInfo.Create(filePath, moduleInfos));
+                documentInfos.Add(DocumentInfo.Create(filePath, nameSpaceName, moduleInfos));
             }
 
             return documentInfos;
@@ -79,10 +80,9 @@ namespace Cotidico.Generator.Analyzer
             foreach (var moduleToAnalyze in modulesToAnalyze)
             {
                 var mappings = AnalyzeModule(semanticModel, moduleToAnalyze);
-                var namespaceName = moduleToAnalyze.ContainingNamespace.Name;
                 var className = moduleToAnalyze.Name;
 
-                yield return ModuleInfo.Create(className, namespaceName, mappings);
+                yield return ModuleInfo.Create(className, mappings);
             }
         }
 
