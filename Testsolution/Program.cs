@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Cotidico.External;
 
 namespace Testsolution
 {
@@ -6,7 +6,7 @@ namespace Testsolution
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var sampleB = Container.Resolve<ISampleB>();
         }
     }
 }

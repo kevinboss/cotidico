@@ -8,6 +8,7 @@ namespace Cotidico.Generator.ConstructionPlanner
     public class ConstructionPlanner
     {
         private const string Dot = ".";
+        private const string Underscore = "_";
 
         public ConstructionPlanInfo CreatePlanFromAnalysis(AnalyzerResultInfo analyzerResultInfo)
         {
@@ -17,13 +18,14 @@ namespace Cotidico.Generator.ConstructionPlanner
             {
                 foreach (var documentInfo in projectInfo.DocumentInfos)
                 {
-                    var factoryFile = FactoryFileInfo.Create(documentInfo.FilePath, documentInfo.NameSpace);
+                    var factoryFile = FactoryFileInfo.Create(projectInfo.ProjectPath, documentInfo.FilePath, documentInfo.NameSpace);
                     foreach (var moduleInfo in documentInfo.ModuleInfos)
                     {
                         foreach (var mappingInfo in moduleInfo.MappingInfos)
                         {
                             var factoryClassName = CreateFactoryClassName(mappingInfo.To.FullMetadataName);
                             var classToConstruct = mappingInfo.From.FullMetadataName;
+                            var returnType = mappingInfo.To.FullMetadataName;
                             var mostSatisfiedConstructionInfo =
                                 GetMostSatisfiedConstructionInfo(mappingInfo, knownDependencies);
                             var parameterFactoryAccessInfos = mostSatisfiedConstructionInfo.Parameters.Select(
@@ -35,7 +37,7 @@ namespace Cotidico.Generator.ConstructionPlanner
                                             CreateFactoryClassName(fullMetadataName));
                                     })
                                 .ToList();
-                            var factory = FactoryInfo.Create(factoryClassName, classToConstruct,
+                            var factory = FactoryInfo.Create(factoryClassName, classToConstruct, returnType,
                                 parameterFactoryAccessInfos);
                             factoryFile.AddFactory(factory);
                         }
@@ -98,7 +100,7 @@ namespace Cotidico.Generator.ConstructionPlanner
 
         private static string CreateFactoryClassName(string metaDataName)
         {
-            return metaDataName.Replace(Dot, string.Empty);
+            return metaDataName.Replace(Dot, Underscore);
         }
     }
 }

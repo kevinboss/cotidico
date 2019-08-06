@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="Cotidico.External, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Cotidico.Generator\bin\Debug\netcoreapp2.2\Cotidico.External.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>

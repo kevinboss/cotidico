@@ -19,15 +19,6 @@ namespace Cotidico.Generator.Analyzer
     {
         public async Task<AnalyzerResultInfo> AnalyzeSolution(string solutionPath)
         {
-            var msBuildInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
-
-            if (msBuildInstances.Length != 1)
-            {
-                throw new InvalidOperationException();
-            }
-
-            MSBuildLocator.RegisterInstance(msBuildInstances[0]);
-
             using (var workspace = MSBuildWorkspace.Create())
             {
                 workspace.WorkspaceFailed += (sender, eventArgs) =>
