@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Cotidico.External;
 using Cotidico.Generator.Analyzer.AnalyzerResult;
 using Cotidico.Generator.Extensions;
-using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -32,7 +31,7 @@ namespace Cotidico.Generator.Analyzer
                 {
                     var projectPath = project.FilePath;
                     var documentInfos = await AnalyzeProject(project);
-                    
+
                     projectInfos.Add(ProjectInfo.Create(projectPath, documentInfos));
                 }
 
@@ -68,26 +67,21 @@ namespace Cotidico.Generator.Analyzer
         private static IEnumerable<ModuleInfo> AnalyzeModules(List<INamedTypeSymbol> modulesToAnalyze,
             SemanticModel semanticModel)
         {
-            foreach (var moduleToAnalyze in modulesToAnalyze)
-            {
-                var mappings = AnalyzeModule(semanticModel, moduleToAnalyze);
-                var className = moduleToAnalyze.Name;
-
-                yield return ModuleInfo.Create(className, mappings);
-            }
+            return modulesToAnalyze
+                .Select(moduleToAnalyze =>
+                    new {fullName = moduleToAnalyze.GetFullMetadataName(), mappings = AnalyzeModule(semanticModel, moduleToAnalyze)})
+                .Select(t => new {t.fullName, t.mappings})
+                .Select(t => ModuleInfo.Create(t.fullName, t.mappings));
         }
 
         private static IEnumerable<MappingInfo> AnalyzeModule(SemanticModel semanticModel,
             INamedTypeSymbol moduleToAnalyze)
         {
             var loadMethods = moduleToAnalyze.GetMembers(ExternalLibraryNames.Module.Load.Name);
-            foreach (var loadMethod in loadMethods)
+            foreach (var mapping in loadMethods.Select(loadMethod => AnalyzeLoadMethod(semanticModel, loadMethod))
+                .SelectMany(mappings => mappings))
             {
-                var mappings = AnalyzeLoadMethod(semanticModel, loadMethod);
-                foreach (var mapping in mappings)
-                {
-                    yield return mapping;
-                }
+                yield return mapping;
             }
         }
 

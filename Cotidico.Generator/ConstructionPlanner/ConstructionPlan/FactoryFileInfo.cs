@@ -1,14 +1,18 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Cotidico.Generator.ConstructionPlanner.ConstructionPlan
 {
     public class FactoryFileInfo
     {
-        public IList<FactoryInfo> factories { get; } = new List<FactoryInfo>();
+        private readonly IList<FactoryInfo> _factories = new List<FactoryInfo>();
+
+        public IReadOnlyList<FactoryInfo> Factories => _factories.ToList();
+
         public string FilePath { get; private set; }
 
-        public string NameSpace { get; set; }
+        public string NameSpace { get; private set; }
 
         public string ProjectPath { get; set; }
 
@@ -33,7 +37,7 @@ namespace Cotidico.Generator.ConstructionPlanner.ConstructionPlan
 
         public void AddFactory(FactoryInfo factory)
         {
-            factories.Add(factory);
+            _factories.Add(factory);
         }
     }
 }

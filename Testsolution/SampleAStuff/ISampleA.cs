@@ -1,4 +1,4 @@
-namespace Testsolution
+namespace Testsolution.SampleAStuff
 {
     public interface ISampleA
     {

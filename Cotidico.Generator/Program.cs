@@ -44,7 +44,7 @@ namespace Cotidico.Generator
             _environmentPreparer.RegisterMsBuildInstance();
             var analyzerResult = await _analyzer.AnalyzeSolution(solutionPath);
             var constructionPlan = _constructionPlanner.CreatePlanFromAnalysis(analyzerResult);
-            await _fileWriter.Write(constructionPlan, solutionPath);
+            await _fileWriter.Write(constructionPlan);
         }
     }
 }

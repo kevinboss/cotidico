@@ -18,12 +18,14 @@ namespace Cotidico.Generator.ConstructionPlanner
             {
                 foreach (var documentInfo in projectInfo.DocumentInfos)
                 {
-                    var factoryFile = FactoryFileInfo.Create(projectInfo.ProjectPath, documentInfo.FilePath, documentInfo.NameSpace);
+                    var factoryFile = FactoryFileInfo.Create(projectInfo.ProjectPath, documentInfo.FilePath,
+                        documentInfo.NameSpace);
                     foreach (var moduleInfo in documentInfo.ModuleInfos)
                     {
                         foreach (var mappingInfo in moduleInfo.MappingInfos)
                         {
                             var factoryClassName = CreateFactoryClassName(mappingInfo.To.FullMetadataName);
+                            var moduleFullName = moduleInfo.FullName;
                             var classToConstruct = mappingInfo.From.FullMetadataName;
                             var returnType = mappingInfo.To.FullMetadataName;
                             var mostSatisfiedConstructionInfo =
@@ -37,7 +39,10 @@ namespace Cotidico.Generator.ConstructionPlanner
                                             CreateFactoryClassName(fullMetadataName));
                                     })
                                 .ToList();
-                            var factory = FactoryInfo.Create(factoryClassName, classToConstruct, returnType,
+                            var factory = FactoryInfo.Create(factoryClassName,
+                                moduleFullName,
+                                classToConstruct,
+                                returnType,
                                 parameterFactoryAccessInfos);
                             factoryFile.AddFactory(factory);
                         }

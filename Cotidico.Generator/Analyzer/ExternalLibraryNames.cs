@@ -1,4 +1,4 @@
-namespace Cotidico.Generator
+namespace Cotidico.Generator.Analyzer
 {
     public static class ExternalLibraryNames
     {
@@ -8,12 +8,11 @@ namespace Cotidico.Generator
 
             public static class Load
             {
-                public static string FullName => Module.FullName + "." + nameof(External.Module.Load);
                 public static string Name => nameof(External.Module.Load);
             }
             public static class Register
             {
-                public static string FullName => Module.FullName + "." + nameof(External.Module.Register);
+                public static string FullName => $"{Module.FullName}.{nameof(External.Module.Register)}";
             }
         }
     }

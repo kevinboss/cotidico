@@ -1,4 +1,6 @@
 ﻿using Cotidico.External;
+using Testsolution.SampleAStuff;
+using Testsolution.SampleBStuff;
 
 namespace Testsolution
 {
@@ -6,7 +8,9 @@ namespace Testsolution
     {
         static void Main(string[] args)
         {
-            var sampleB = Container.Resolve<ISampleB>();
+            var container = Container.StartBuilding().AddModule(new SampleModule()).Build();
+            var sampleB = container.Resolve<ISampleB>();
+            var sampleA = container.Resolve<ISampleA>();
         }
     }
 }

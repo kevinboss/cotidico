@@ -1,4 +1,6 @@
 using Cotidico.External;
+using Testsolution.SampleAStuff;
+using Testsolution.SampleBStuff;
 
 namespace Testsolution
 {

@@ -4,20 +4,21 @@ namespace Cotidico.Generator.Analyzer.AnalyzerResult
 {
     public class ModuleInfo
     {
+        public string FullName { get; private set; }
+
+        public IEnumerable<MappingInfo> MappingInfos { get; private set; }
+
         private ModuleInfo()
         {
         }
 
-        public static ModuleInfo Create(string className, IEnumerable<MappingInfo> mappingInfos)
+        public static ModuleInfo Create(string fullName, IEnumerable<MappingInfo> mappingInfos)
         {
             return new ModuleInfo
             {
-                ClassName = className,
+                FullName = fullName,
                 MappingInfos = mappingInfos
             };
         }
-
-        public string ClassName { get; set; }
-        public IEnumerable<MappingInfo> MappingInfos { get; set; }
     }
 }

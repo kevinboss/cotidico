@@ -1,4 +1,6 @@
-namespace Testsolution
+using Testsolution.SampleAStuff;
+
+namespace Testsolution.SampleBStuff
 {
     class SampleB : ISampleB
     {
