@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Cotidico.External;
@@ -46,11 +47,12 @@ namespace Cotidico.Generator.Analyzer
             var compilation = await project.GetCompilationAsync();
             foreach (var document in project.Documents)
             {
-                var tree = await document.GetSyntaxTreeAsync();
-                var semanticModel = compilation.GetSemanticModel(tree);
-                var root = tree.GetCompilationUnitRoot();
+                var syntaxTree = await document.GetSyntaxTreeAsync();
+                
+                var compilationUnitRoot = syntaxTree.GetCompilationUnitRoot();
+                var semanticModel = compilation.GetSemanticModel(syntaxTree);
 
-                var modulesToAnalyze = GetModulesToAnalyze(root, semanticModel);
+                var modulesToAnalyze = GetModulesToAnalyze(compilationUnitRoot, semanticModel);
 
                 if (!modulesToAnalyze.Any()) continue;
 
@@ -64,7 +66,7 @@ namespace Cotidico.Generator.Analyzer
             return documentInfos;
         }
 
-        private static IEnumerable<ModuleInfo> AnalyzeModules(List<INamedTypeSymbol> modulesToAnalyze,
+        private static IEnumerable<ModuleInfo> AnalyzeModules(IEnumerable<INamedTypeSymbol> modulesToAnalyze,
             SemanticModel semanticModel)
         {
             return modulesToAnalyze
@@ -75,14 +77,16 @@ namespace Cotidico.Generator.Analyzer
         }
 
         private static IEnumerable<MappingInfo> AnalyzeModule(SemanticModel semanticModel,
-            INamedTypeSymbol moduleToAnalyze)
+            INamespaceOrTypeSymbol moduleToAnalyze)
         {
             var loadMethods = moduleToAnalyze.GetMembers(ExternalLibraryNames.Module.Load.Name);
-            foreach (var mapping in loadMethods.Select(loadMethod => AnalyzeLoadMethod(semanticModel, loadMethod))
-                .SelectMany(mappings => mappings))
-            {
-                yield return mapping;
-            }
+            return AnalyzeLoadMethods(semanticModel, loadMethods);
+        }
+
+        private static IEnumerable<MappingInfo> AnalyzeLoadMethods(SemanticModel semanticModel, ImmutableArray<ISymbol> loadMethods)
+        {
+            return loadMethods.Select(loadMethod => AnalyzeLoadMethod(semanticModel, loadMethod))
+                .SelectMany(mappings => mappings);
         }
 
         private static IEnumerable<MappingInfo> AnalyzeLoadMethod(SemanticModel semanticModel, ISymbol loadMethod)
@@ -132,7 +136,7 @@ namespace Cotidico.Generator.Analyzer
                 .DescendantNodes()
                 .OfType<ClassDeclarationSyntax>()
                 .Select(classDeclarationSyntax => semanticModel.GetDeclaredSymbol(classDeclarationSyntax))
-                .Where(namedTypeSymbol => namedTypeSymbol.InheritsFrom<Module>())
+                .Where(classSymbol => classSymbol.InheritsFrom<Module>())
                 .ToList();
             return modulesToAnalyze;
         }
