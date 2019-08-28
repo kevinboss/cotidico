@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Cotidico.External;
@@ -48,11 +47,11 @@ namespace Cotidico.Generator.Analyzer
             foreach (var document in project.Documents)
             {
                 var syntaxTree = await document.GetSyntaxTreeAsync();
-                
-                var compilationUnitRoot = syntaxTree.GetCompilationUnitRoot();
+
+                var syntaxTreeRoot = syntaxTree.GetCompilationUnitRoot();
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
 
-                var modulesToAnalyze = GetModulesToAnalyze(compilationUnitRoot, semanticModel);
+                var modulesToAnalyze = GetModulesToAnalyze(syntaxTreeRoot, semanticModel);
 
                 if (!modulesToAnalyze.Any()) continue;
 
@@ -66,12 +65,28 @@ namespace Cotidico.Generator.Analyzer
             return documentInfos;
         }
 
+        private static List<INamedTypeSymbol> GetModulesToAnalyze(CompilationUnitSyntax root,
+            SemanticModel semanticModel)
+        {
+            var modulesToAnalyze = root
+                .DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .Select(classDeclarationSyntax => semanticModel.GetDeclaredSymbol(classDeclarationSyntax))
+                .Where(classSymbol => classSymbol.InheritsFrom<Module>())
+                .ToList();
+            return modulesToAnalyze;
+        }
+
         private static IEnumerable<ModuleInfo> AnalyzeModules(IEnumerable<INamedTypeSymbol> modulesToAnalyze,
             SemanticModel semanticModel)
         {
             return modulesToAnalyze
                 .Select(moduleToAnalyze =>
-                    new {fullName = moduleToAnalyze.GetFullMetadataName(), mappings = AnalyzeModule(semanticModel, moduleToAnalyze)})
+                    new
+                    {
+                        fullName = moduleToAnalyze.GetFullMetadataName(),
+                        mappings = AnalyzeModule(semanticModel, moduleToAnalyze)
+                    })
                 .Select(t => new {t.fullName, t.mappings})
                 .Select(t => ModuleInfo.Create(t.fullName, t.mappings));
         }
@@ -79,11 +94,14 @@ namespace Cotidico.Generator.Analyzer
         private static IEnumerable<MappingInfo> AnalyzeModule(SemanticModel semanticModel,
             INamespaceOrTypeSymbol moduleToAnalyze)
         {
-            var loadMethods = moduleToAnalyze.GetMembers(ExternalLibraryNames.Module.Load.Name);
+            var loadMethods = moduleToAnalyze.GetMembers(ExternalLibraryInformation.Module.Load.Name)
+                .OfType<IMethodSymbol>()
+                .Where(loadMethod => loadMethod.Parameters.IsEmpty);
             return AnalyzeLoadMethods(semanticModel, loadMethods);
         }
 
-        private static IEnumerable<MappingInfo> AnalyzeLoadMethods(SemanticModel semanticModel, ImmutableArray<ISymbol> loadMethods)
+        private static IEnumerable<MappingInfo> AnalyzeLoadMethods(SemanticModel semanticModel,
+            IEnumerable<IMethodSymbol> loadMethods)
         {
             return loadMethods.Select(loadMethod => AnalyzeLoadMethod(semanticModel, loadMethod))
                 .SelectMany(mappings => mappings);
@@ -96,11 +114,13 @@ namespace Cotidico.Generator.Analyzer
                 .OfType<InvocationExpressionSyntax>()
                 .Select(invocationExpressionSyntax =>
                     semanticModel.GetSymbolInfo(invocationExpressionSyntax.Expression).Symbol as IMethodSymbol)
-                .Where(e => e.GetFullMetadataName() == ExternalLibraryNames.Module.Register.FullName);
+                .Where(e => e != null &&
+                            e.GetFullMetadataName() == ExternalLibraryInformation.Module.Register.FullName &&
+                            e.Parameters.IsEmpty);
 
-            var mappings = methodSymbols.Select(e => e.TypeArguments).ToList();
-
-            foreach (var mapping in mappings)
+            foreach (var mapping in methodSymbols.Select(e => e.TypeArguments)
+                .Where(typeArguments =>
+                    typeArguments.Length == ExternalLibraryInformation.Module.RegisterMethodsGenericCount))
             {
                 if (!(mapping[0] is INamedTypeSymbol from))
                 {
@@ -127,18 +147,6 @@ namespace Cotidico.Generator.Analyzer
 
                 yield return MappingInfo.Create(fromInfo, toInfo);
             }
-        }
-
-        private static List<INamedTypeSymbol> GetModulesToAnalyze(CompilationUnitSyntax root,
-            SemanticModel semanticModel)
-        {
-            var modulesToAnalyze = root
-                .DescendantNodes()
-                .OfType<ClassDeclarationSyntax>()
-                .Select(classDeclarationSyntax => semanticModel.GetDeclaredSymbol(classDeclarationSyntax))
-                .Where(classSymbol => classSymbol.InheritsFrom<Module>())
-                .ToList();
-            return modulesToAnalyze;
         }
     }
 }

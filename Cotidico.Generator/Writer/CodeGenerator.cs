@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Cotidico.Common;
 using Cotidico.External;
 using Cotidico.Generator.ConstructionPlanner.ConstructionPlan;
 using Microsoft.CodeAnalysis;
@@ -10,8 +11,6 @@ namespace Cotidico.Generator.Writer
 {
     public class CodeGenerator
     {
-        private const string ConstructionMethodName = "Create";
-        
         public string Generate(string factoryFileNameSpace, IReadOnlyList<FactoryInfo> factoryFileFactories)
         {
             var @namespace = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(factoryFileNameSpace))
@@ -49,6 +48,21 @@ namespace Cotidico.Generator.Writer
         {
             var constructionMethodCallBuilder = new StringBuilder($"return new {factory.ClassToConstruct}(");
 
+            AppendDependencyCalls(constructionMethodCallBuilder, factory);
+
+            constructionMethodCallBuilder.Append(");");
+
+            var syntax = SyntaxFactory.ParseStatement(constructionMethodCallBuilder.ToString());
+            var constructionMethodDeclaration = SyntaxFactory
+                .MethodDeclaration(SyntaxFactory.ParseTypeName(factory.ReturnType), Constants.ConstructionMethodName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.StaticKeyword))
+                .WithBody(SyntaxFactory.Block(syntax));
+            return constructionMethodDeclaration;
+        }
+
+        private static void AppendDependencyCalls(StringBuilder constructionMethodCallBuilder, FactoryInfo factory)
+        {
             var needsSeparator = false;
             foreach (var factoryAccess in factory.ParameterFactoryClassNames)
             {
@@ -64,25 +78,15 @@ namespace Cotidico.Generator.Writer
                 var dependencyCall =
                     $"{factoryAccess.DependencyNameSpace}." +
                     $"{factoryAccess.CreateFactoryClassName}." +
-                    $"{ConstructionMethodName}()";
+                    $"{Constants.ConstructionMethodName}()";
                 constructionMethodCallBuilder.Append(dependencyCall);
             }
-
-            constructionMethodCallBuilder.Append(");");
-
-            var syntax = SyntaxFactory.ParseStatement(constructionMethodCallBuilder.ToString());
-            var constructionMethodDeclaration = SyntaxFactory
-                .MethodDeclaration(SyntaxFactory.ParseTypeName(factory.ReturnType), ConstructionMethodName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                    SyntaxFactory.Token(SyntaxKind.StaticKeyword))
-                .WithBody(SyntaxFactory.Block(syntax));
-            return constructionMethodDeclaration;
         }
 
         private static MethodDeclarationSyntax CreateModuleTypeMethodDeclaration(FactoryInfo factory)
         {
             var moduleTypeMethodDeclaration = SyntaxFactory
-                .MethodDeclaration(SyntaxFactory.ParseTypeName("Type"), "GetModuleType")
+                .MethodDeclaration(SyntaxFactory.ParseTypeName("Type"), Constants.GetModuleTypeMethodName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
                 .WithBody(SyntaxFactory.Block(SyntaxFactory.ParseStatement(

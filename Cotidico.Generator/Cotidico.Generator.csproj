@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.2.0-beta1-final" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cotidico.Common\Cotidico.Common.csproj" />
     <ProjectReference Include="..\Cotidico.External\Cotidico.External.csproj" />
   </ItemGroup>
 </Project>

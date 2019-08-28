@@ -24,7 +24,7 @@ namespace Cotidico.Generator.ConstructionPlanner.ConstructionPlan
         {
             var documentFileInfo = new FileInfo(documentFilePath);
             var factoryFileName =
-                $"{Path.GetFileNameWithoutExtension(documentFileInfo.Name)}.factory{documentFileInfo.Extension}";
+                $"{Path.GetFileNameWithoutExtension(documentFileInfo.Name)}.Factory{documentFileInfo.Extension}";
             var factoryFileDirectoryName = documentFileInfo.DirectoryName;
 
             return new FactoryFileInfo

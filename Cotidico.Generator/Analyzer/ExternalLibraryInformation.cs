@@ -1,6 +1,6 @@
 namespace Cotidico.Generator.Analyzer
 {
-    public static class ExternalLibraryNames
+    public static class ExternalLibraryInformation
     {
         public static class Module
         {
@@ -14,6 +14,8 @@ namespace Cotidico.Generator.Analyzer
             {
                 public static string FullName => $"{Module.FullName}.{nameof(External.Module.Register)}";
             }
+            
+            public const int RegisterMethodsGenericCount = 2;
         }
     }
 }

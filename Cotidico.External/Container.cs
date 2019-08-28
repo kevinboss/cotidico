@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cotidico.Common;
 
 namespace Cotidico.External
 {
     public class Container
     {
-        private const string ConstructionMethodName = "Create";
         private readonly IList<Module> _modules = new List<Module>();
         private IEnumerable<Type> _registeredFactories;
 
@@ -23,11 +23,11 @@ namespace Cotidico.External
         {
             var type = typeof(TType);
             var constructionType = GetFactories()
-                .SingleOrDefault(t => t.GetMethod(ConstructionMethodName)?.ReturnType == type);
+                .SingleOrDefault(t => t.GetMethod(Constants.ConstructionMethodName)?.ReturnType == type);
 
             if (constructionType == null) return default;
 
-            var result = constructionType.GetMethod(ConstructionMethodName)?.Invoke(null, null);
+            var result = constructionType.GetMethod(Constants.ConstructionMethodName)?.Invoke(null, null);
             return result is TType type1 ? type1 : default;
         }
 
@@ -37,7 +37,8 @@ namespace Cotidico.External
                 .SelectMany(s => s.GetTypes())
                 .Where(p => typeof(IFactory).IsAssignableFrom(p));
             return _registeredFactories ?? (_registeredFactories = potentialFactories.Where(factory =>
-                       factory.GetMethod("GetModuleType")?.Invoke(null, null) is Type moduleType &&
+                       factory.GetMethod(Constants.GetModuleTypeMethodName)?
+                           .Invoke(null, null) is Type moduleType &&
                        _modules.Any(module => module.GetType() == moduleType)));
         }
 

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cotidico.Generator", "Cotid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cotidico.External", "Cotidico.External\Cotidico.External.csproj", "{C97438EA-958C-426A-9478-150A8FF2B604}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cotidico.Common", "Cotidico.Common\Cotidico.Common.csproj", "{D986495C-6691-4585-AA6D-9217B3DEEB3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{C97438EA-958C-426A-9478-150A8FF2B604}.Release|x64.Build.0 = Release|Any CPU
 		{C97438EA-958C-426A-9478-150A8FF2B604}.Release|x86.ActiveCfg = Release|Any CPU
 		{C97438EA-958C-426A-9478-150A8FF2B604}.Release|x86.Build.0 = Release|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Debug|x64.Build.0 = Debug|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Debug|x86.Build.0 = Debug|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Release|x64.ActiveCfg = Release|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Release|x64.Build.0 = Release|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Release|x86.ActiveCfg = Release|Any CPU
+		{D986495C-6691-4585-AA6D-9217B3DEEB3C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
